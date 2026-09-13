@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./legal.css";
+
+:root {
+  --bg-primary: #F7F4EC;
+  --bg-secondary: #EFE9DC;
+  --bg-card: #FFFDF8;
+  --text-primary: #292A24;
+  --text-secondary: #6F7067;
+  --text-muted: #8E8F86;
+  --green-primary: #445343;
+  --green-dark: #29352C;
+  --green-hover: #374636;
+  --gold-soft: #B79B68;
+  --gold-light: #E7DAC0;
+  --line-subtle: #E2DBD0;
+  --line-card: #ECE5DA;
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+  --border-radius-full: 9999px;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(183, 155, 104, 0.25);
+  color: #29352C;
+}
+
+.font-serif {
+  font-family: var(--font-newsreader), Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #D9D2C5;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B79B68;
+}
+
+/* Container Utility */
+.mana-container {
+  width: min(1200px, 100% - 40px);
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .mana-container {
+    width: min(1200px, 100% - 64px);
+  }
+}
+
+/* Smooth Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
