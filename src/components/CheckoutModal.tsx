@@ -2,18 +2,24 @@
 
 import React, { useState, useEffect } from "react";
 import { useCheckout, PlanType } from "./CheckoutContext";
+import { AxionChargeResponse } from "@/lib/axion-pay";
+
+type CheckoutStep = "form" | "pix_payment" | "success";
 
 export function CheckoutModal() {
   const { isCheckoutOpen, closeCheckout, selectedPlan, openCheckout } =
     useCheckout();
 
+  const [step, setStep] = useState<CheckoutStep>("form");
   const [paymentMethod, setPaymentMethod] = useState<"cartao" | "pix">("pix");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [optIn, setOptIn] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [copiedPix, setCopiedPix] = useState(false);
+  const [pixCharge, setPixCharge] = useState<AxionChargeResponse | null>(null);
 
   // Set default payment method when plan changes
   useEffect(() => {
@@ -35,6 +41,26 @@ export function CheckoutModal() {
       document.body.style.overflow = "";
     };
   }, [isCheckoutOpen]);
+
+  // Poll status if on pix_payment step
+  useEffect(() => {
+    if (step !== "pix_payment" || !pixCharge?.correlationId) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/checkout/status/${pixCharge.correlationId}`);
+        const data = await res.json();
+        if (data.status === "PAID") {
+          clearInterval(interval);
+          setStep("success");
+        }
+      } catch (err) {
+        // Silent poll error
+      }
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [step, pixCharge]);
 
   if (!isCheckoutOpen) return null;
 
@@ -79,20 +105,69 @@ export function CheckoutModal() {
 
   const currentPlan = planDetails[selectedPlan];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCopyPix = () => {
+    if (!pixCharge?.brCode) return;
+    navigator.clipboard.writeText(pixCharge.brCode);
+    setCopiedPix(true);
+    setTimeout(() => setCopiedPix(false), 3000);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !phone || !optIn) return;
     setLoading(true);
+    setErrorMessage("");
 
-    // Simulate safe checkout confirmation
-    setTimeout(() => {
+    try {
+      if (paymentMethod === "pix") {
+        const res = await fetch("/api/checkout/pix", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            plan: selectedPlan,
+            name,
+            email,
+            phone,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Falha ao gerar cobrança PIX.");
+        }
+
+        setPixCharge(data.charge);
+        setStep("pix_payment");
+      } else {
+        const res = await fetch("/api/checkout/card", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            plan: selectedPlan,
+            name,
+            email,
+            phone,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Falha ao processar assinatura.");
+        }
+
+        setStep("success");
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || "Ocorreu um erro ao processar.");
+    } finally {
       setLoading(false);
-      setIsSuccess(true);
-    }, 700);
+    }
   };
 
   const resetAndClose = () => {
-    setIsSuccess(false);
+    setStep("form");
+    setPixCharge(null);
+    setErrorMessage("");
     closeCheckout();
   };
 
@@ -119,6 +194,9 @@ export function CheckoutModal() {
             <span className="font-serif text-lg font-medium text-[#292A24]">
               Maná Diário
             </span>
+            <span className="text-[10px] text-[#6F7067] bg-[#EFE9DC] px-2 py-0.5 rounded-full border border-[#E2DBD0] ml-1">
+              AXION Pay 🔒
+            </span>
           </div>
 
           <button
@@ -133,16 +211,101 @@ export function CheckoutModal() {
 
         {/* Modal Body */}
         <div className="p-6 sm:p-8 max-h-[85vh] overflow-y-auto">
-          {isSuccess ? (
-            /* Post-Purchase Emotional Celebration Screen */
-            <div className="text-center py-6 space-y-6">
+          {/* STEP 1: PIX PAYMENT (QR CODE & COPIA E COLA) */}
+          {step === "pix_payment" && pixCharge && (
+            <div className="text-center py-4 space-y-6 animate-fade-in">
+              <div>
+                <span className="text-[11px] uppercase tracking-widest text-[#B79B68] font-semibold block mb-1">
+                  ✦ Pagamento via PIX · AXION Pay
+                </span>
+                <h3
+                  id="checkout-modal-title"
+                  className="font-serif text-2xl sm:text-3xl text-[#292A24] font-normal tracking-tight"
+                >
+                  Pague com seu banco
+                </h3>
+                <p className="text-xs text-[#6F7067] mt-1 font-light">
+                  Abra o aplicativo do seu banco e aponte a câmera ou copie o código.
+                </p>
+              </div>
+
+              {/* QR Code Container */}
+              <div className="bg-[#FFF] border-2 border-[#E2DBD0] p-4 rounded-2xl inline-block shadow-sm">
+                {pixCharge.qrCodeUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={pixCharge.qrCodeUrl}
+                    alt="QR Code PIX AXION Pay"
+                    className="w-48 h-48 mx-auto rounded-lg"
+                  />
+                ) : (
+                  <div className="w-48 h-48 flex items-center justify-center bg-[#F7F4EC] text-xs text-[#6F7067]">
+                    QR Code Gerado
+                  </div>
+                )}
+                <span className="text-[11px] text-[#445343] font-semibold block mt-2">
+                  Total: {currentPlan.total}
+                </span>
+              </div>
+
+              {/* Pix Copia e Cola Field */}
+              <div className="space-y-2 max-w-md mx-auto text-left">
+                <label className="block text-xs font-medium text-[#292A24]">
+                  Código PIX (Copia e Cola)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={pixCharge.brCode}
+                    className="w-full px-3 py-2 text-xs font-mono bg-[#F7F4EC] border border-[#E2DBD0] rounded-xl text-[#292A24] focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCopyPix}
+                    className="px-4 py-2 bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-medium rounded-xl whitespace-nowrap transition-colors cursor-pointer"
+                  >
+                    {copiedPix ? "Copiado! ✓" : "Copiar"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Status Polling Indicator */}
+              <div className="flex items-center justify-center gap-2 text-xs text-[#6F7067] pt-2">
+                <span className="w-2 h-2 rounded-full bg-[#B79B68] animate-ping" />
+                <span>Aguardando confirmação do pagamento em tempo real...</span>
+              </div>
+
+              {/* Confirm / Simulate Button */}
+              <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  type="button"
+                  onClick={() => setStep("success")}
+                  className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-xs px-6 py-3.5 rounded-full transition-colors shadow-md cursor-pointer"
+                >
+                  Já realizei o pagamento →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep("form")}
+                  className="py-3 px-5 rounded-full border border-[#E2DBD0] text-xs text-[#6F7067] hover:text-[#292A24] transition-colors"
+                >
+                  Voltar e alterar dados
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: SUCCESS CELEBRATION */}
+          {step === "success" && (
+            <div className="text-center py-6 space-y-6 animate-fade-in">
               <div className="w-16 h-16 rounded-full bg-[#E8F0E8] text-[#29352C] font-serif text-2xl font-bold flex items-center justify-center mx-auto shadow-sm">
                 🌤
               </div>
 
               <div>
                 <span className="text-xs uppercase tracking-widest text-[#B79B68] font-semibold block mb-1">
-                  ✦ Assinatura Confirmada
+                  ✦ Assinatura Confirmada · AXION Pay
                 </span>
                 <h3
                   id="checkout-modal-title"
@@ -205,8 +368,10 @@ export function CheckoutModal() {
                 </button>
               </div>
             </div>
-          ) : (
-            /* Checkout Form Flow */
+          )}
+
+          {/* STEP 3: INITIAL DATA ENTRY FORM */}
+          {step === "form" && (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <span className="text-[11px] uppercase tracking-widest text-[#B79B68] font-semibold block mb-1">
@@ -219,6 +384,12 @@ export function CheckoutModal() {
                   Confirme o seu plano
                 </h3>
               </div>
+
+              {errorMessage && (
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
+                  {errorMessage}
+                </div>
+              )}
 
               {/* Plan Switcher Pills */}
               <div className="grid grid-cols-3 gap-2.5">
@@ -261,7 +432,7 @@ export function CheckoutModal() {
               {/* Payment Method Selector */}
               <div className="space-y-2">
                 <label className="text-[12px] font-medium text-[#292A24] block">
-                  Forma de pagamento
+                  Forma de pagamento (Gateway AXION Pay)
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {selectedPlan === "monthly" ? (
@@ -276,10 +447,10 @@ export function CheckoutModal() {
                         }`}
                       >
                         <strong className="text-xs font-semibold text-[#292A24] block">
-                          💳 Cartão
+                          💳 Cartão de Crédito
                         </strong>
                         <span className="text-[10px] text-[#6F7067] font-light">
-                          Renovação mensal
+                          Assinatura mensal recorrente
                         </span>
                       </button>
 
@@ -293,7 +464,7 @@ export function CheckoutModal() {
                         }`}
                       >
                         <strong className="text-xs font-semibold text-[#292A24] block">
-                          ⚡ PIX
+                          ⚡ PIX Imediato
                         </strong>
                         <span className="text-[10px] text-[#6F7067] font-light">
                           Pagamento a cada mês
@@ -306,10 +477,10 @@ export function CheckoutModal() {
                         <span className="text-sm">⚡</span>
                         <div>
                           <strong className="text-xs font-semibold text-[#292A24] block">
-                            PIX com Desconto Especial
+                            PIX Instantâneo com Desconto Especial
                           </strong>
                           <span className="text-[10px] text-[#6F7067]">
-                            Chave gerada instantaneamente no checkout seguro
+                            QR Code gerado na hora via AXION Pay
                           </span>
                         </div>
                       </div>
@@ -375,15 +546,15 @@ export function CheckoutModal() {
                   </span>
                 </div>
 
-                {/* Stripe Credit Card Simulated Secure Element if Cartao */}
+                {/* Secure Card Notice if Cartao */}
                 {paymentMethod === "cartao" && selectedPlan === "monthly" && (
                   <div className="p-3.5 rounded-xl border border-[#E2DBD0] bg-[#F7F4EC] space-y-1">
                     <span className="text-[11px] font-medium text-[#292A24] block">
-                      Dados do Cartão (Protegido via Stripe)
+                      Dados do Cartão (Processamento Seguro AXION Pay)
                     </span>
                     <div className="flex items-center gap-2 text-xs text-[#8E8F86] py-1">
                       <span>🔒</span>
-                      <span>Ambiente certificado Stripe com tokenização segura.</span>
+                      <span>Tokenização e criptografia de ponta a ponta.</span>
                     </div>
                   </div>
                 )}
@@ -426,7 +597,7 @@ export function CheckoutModal() {
                 className="w-full py-4 rounded-full bg-[#29352C] hover:bg-[#445343] disabled:opacity-50 text-[#FFFDF8] font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
               >
                 {loading ? (
-                  <span>Preparando seu Maná...</span>
+                  <span>Processando na AXION Pay...</span>
                 ) : (
                   <>
                     <span>
@@ -435,8 +606,8 @@ export function CheckoutModal() {
                           ? "Assinar por R$ 29,90/mês"
                           : "Pagar R$ 29,90 via PIX"
                         : selectedPlan === "quarterly"
-                        ? "Pagar R$ 79,90 via PIX"
-                        : "Pagar R$ 149,90 via PIX"}
+                        ? "Gerar PIX de R$ 79,90"
+                        : "Gerar PIX de R$ 149,90"}
                     </span>
                     <span className="text-[#B79B68]">→</span>
                   </>
@@ -447,7 +618,7 @@ export function CheckoutModal() {
               <p className="text-center text-[10px] text-[#8E8F86] flex items-center justify-center gap-1.5 pt-1">
                 <span>🔒</span>
                 <span>
-                  Pagamento criptografado · Sem burocracia · Cancele enviando SAIR
+                  AXION Pay · Pagamento seguro e criptografado · Cancele enviando SAIR
                 </span>
               </p>
             </form>
