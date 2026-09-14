@@ -30,22 +30,34 @@ export function Footer() {
           {/* Links navigation */}
           <div className="md:col-span-7 flex flex-wrap gap-x-8 gap-y-4 md:justify-end text-[13px]">
             <a
-              href="#problema"
+              href="#demonstracao"
               className="hover:text-[#292A24] transition-colors"
             >
-              A Proposta
-            </a>
-            <a
-              href="#mensagem"
-              className="hover:text-[#292A24] transition-colors"
-            >
-              A Mensagem
+              Demonstração
             </a>
             <a
               href="#como-funciona"
               className="hover:text-[#292A24] transition-colors"
             >
               Como Funciona
+            </a>
+            <a
+              href="#rotina"
+              className="hover:text-[#292A24] transition-colors"
+            >
+              A Rotina
+            </a>
+            <a
+              href="#para-quem"
+              className="hover:text-[#292A24] transition-colors"
+            >
+              Para Quem É
+            </a>
+            <a
+              href="#depoimentos"
+              className="hover:text-[#292A24] transition-colors"
+            >
+              Depoimentos
             </a>
             <a
               href="#planos"

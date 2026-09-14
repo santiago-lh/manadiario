@@ -19,7 +19,7 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "bg-[#F7F4EC]/95 backdrop-blur-md border-b border-[#E2DBD0] shadow-sm py-3.5"
+          ? "bg-[#F7F4EC]/95 backdrop-blur-md border-b border-[#E2DBD0] shadow-xs py-3.5"
           : "bg-transparent py-5"
       }`}
     >
@@ -44,13 +44,7 @@ export function Header() {
           aria-label="Navegação principal"
         >
           <a
-            href="#problema"
-            className="hover:text-[#292A24] transition-colors py-1 hover:underline underline-offset-4 decoration-[#B79B68]"
-          >
-            A proposta
-          </a>
-          <a
-            href="#mensagem"
+            href="#demonstracao"
             className="hover:text-[#292A24] transition-colors py-1 hover:underline underline-offset-4 decoration-[#B79B68]"
           >
             A mensagem
@@ -60,6 +54,12 @@ export function Header() {
             className="hover:text-[#292A24] transition-colors py-1 hover:underline underline-offset-4 decoration-[#B79B68]"
           >
             Como funciona
+          </a>
+          <a
+            href="#para-quem"
+            className="hover:text-[#292A24] transition-colors py-1 hover:underline underline-offset-4 decoration-[#B79B68]"
+          >
+            Para quem é
           </a>
           <a
             href="#depoimentos"
@@ -86,9 +86,9 @@ export function Header() {
           <button
             type="button"
             onClick={() => openCheckout("semiannual")}
-            className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-[13px] font-medium px-5 py-2.5 rounded-full transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-[13px] font-medium px-5 py-2.5 rounded-full transition-all duration-200 hover:shadow-sm cursor-pointer"
           >
-            Começar
+            Quero receber meu Maná Diário
           </button>
         </div>
       </div>

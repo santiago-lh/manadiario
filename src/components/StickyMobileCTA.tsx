@@ -30,16 +30,16 @@ export function StickyMobileCTA() {
             </span>
           </div>
           <span className="text-[11px] text-[#6F7067]">
-            A partir de <strong className="text-[#292A24]">R$ 24,98/mês</strong>
+            Às 06h no seu WhatsApp
           </span>
         </div>
 
         <button
           type="button"
           onClick={() => openCheckout("semiannual")}
-          className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-semibold px-5 py-2.5 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
+          className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-semibold px-4 py-2.5 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
         >
-          Começar →
+          Quero receber meu Maná Diário
         </button>
       </div>
     </div>

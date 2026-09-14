@@ -6,49 +6,48 @@ import { useCheckout, PlanType } from "./CheckoutContext";
 export function Pricing() {
   const { openCheckout } = useCheckout();
 
-  const handleSelectPlan = (plan: PlanType) => {
-    openCheckout(plan);
-  };
-
   return (
     <section
-      className="py-20 md:py-28 bg-[#F7F4EC] border-b border-[#E2DBD0]"
+      className="py-20 md:py-28 bg-[#EFE9DC]/30 border-b border-[#E2DBD0]"
       id="planos"
       aria-labelledby="pricing-title"
     >
       <div className="mana-container">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EFE9DC] text-[#445343] text-[11px] font-semibold tracking-wider uppercase mb-4">
+          <div className="inline-flex items-center gap-2 text-[#445343] text-xs font-semibold tracking-wider uppercase mb-3">
             <span className="text-[#B79B68]">✦</span>
-            <span>Planos e Assinatura</span>
+            <span>Planos de Assinatura</span>
           </div>
 
           <h2
             id="pricing-title"
-            className="font-serif text-[38px] sm:text-[46px] md:text-[52px] leading-[1.12] text-[#292A24] font-normal tracking-tight mb-4"
+            className="font-serif text-[34px] sm:text-[44px] md:text-[50px] leading-[1.12] text-[#292A24] font-normal tracking-tight mb-3"
           >
-            Um hábito que custa
-            <br />
-            <em className="italic text-[#445343]">menos que um café.</em>
+            Escolha o seu plano
           </h2>
 
           <p className="text-base text-[#6F7067] font-light leading-relaxed">
-            Escolha o período ideal para cultivar sua jornada de fé. Todos os
-            planos contam com entrega diária e cancelamento a qualquer hora.
+            Uma assinatura serena para nutrir sua fé todos os dias. Cancele quando
+            quiser diretamente pelo WhatsApp.
           </p>
         </div>
 
-        {/* 3 Pricing Cards */}
+        {/* 3 Clean, Serene Pricing Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
-          {/* Plano Mensal */}
+          {/* Mensal: Para começar */}
           <div className="bg-[#FFFDF8] border border-[#E2DBD0] rounded-2xl p-7 flex flex-col justify-between transition-all duration-200 hover:border-[#B79B68]/60">
             <div>
               <div className="flex justify-between items-baseline mb-4">
-                <h3 className="font-serif text-2xl font-medium text-[#292A24]">
-                  Mensal
-                </h3>
-                <span className="text-xs text-[#8E8F86]">Recorrente</span>
+                <div>
+                  <span className="text-[11px] text-[#6F7067] uppercase tracking-wider block">
+                    Para começar
+                  </span>
+                  <h3 className="font-serif text-2xl font-medium text-[#292A24] mt-0.5">
+                    Mensal
+                  </h3>
+                </div>
+                <span className="text-xs text-[#8E8F86]">Cobrança mensal</span>
               </div>
 
               <div className="mb-6 pb-6 border-b border-[#F0EBE0]">
@@ -60,53 +59,57 @@ export function Pricing() {
                   <span className="text-xs text-[#6F7067]">/mês</span>
                 </div>
                 <p className="text-xs text-[#8E8F86] mt-2">
-                  Cobrança mensal no cartão ou PIX
+                  Total de R$ 29,90 cobrados a cada mês
                 </p>
               </div>
 
               <ul className="space-y-3 text-xs text-[#6F7067] mb-8 font-light">
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
-                  <span>Envio diário às 06h pelo WhatsApp</span>
+                  <span className="text-[#445343]">✓</span>
+                  <span>Envio pontual às 06h no WhatsApp</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
-                  <span>Leitura, reflexão, oração e prática</span>
+                  <span className="text-[#445343]">✓</span>
+                  <span>Palavra, reflexão, oração e aplicação</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
-                  <span>Sem grupo e 100% confidencial</span>
+                  <span className="text-[#445343]">✓</span>
+                  <span>Sem grupos e 100% individual</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
-                  <span>Cancele quando quiser</span>
+                  <span className="text-[#445343]">✓</span>
+                  <span>Cancele a qualquer momento</span>
                 </li>
               </ul>
             </div>
 
             <button
               type="button"
-              onClick={() => handleSelectPlan("monthly")}
-              className="w-full py-3.5 px-4 rounded-full border border-[#29352C] text-[#29352C] hover:bg-[#29352C] hover:text-[#FFFDF8] font-medium text-sm transition-colors duration-200 cursor-pointer"
+              onClick={() => openCheckout("monthly")}
+              className="w-full py-3.5 px-4 rounded-full border border-[#29352C] text-[#29352C] hover:bg-[#29352C] hover:text-[#FFFDF8] font-medium text-xs transition-colors duration-200 cursor-pointer"
             >
-              Começar plano Mensal
+              Começar com este plano
             </button>
           </div>
 
-          {/* Plano Semestral (DESTAQUE) */}
-          <div className="bg-[#FFFDF8] border-2 border-[#B79B68] rounded-2xl p-7 sm:p-8 flex flex-col justify-between shadow-xl relative -translate-y-2">
-            {/* Best Choice Badge */}
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B79B68] text-[#FFFDF8] text-[10px] font-semibold tracking-wider uppercase px-4 py-1 rounded-full shadow-xs">
-              ✦ Melhor Escolha · Economia Máxima
+          {/* Semestral: Mais escolhido */}
+          <div className="bg-[#FFFDF8] border-2 border-[#B79B68] rounded-2xl p-7 sm:p-8 flex flex-col justify-between shadow-sm relative lg:-translate-y-2">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#445343] text-[#FFFDF8] text-[10px] font-medium tracking-wider uppercase px-4 py-0.5 rounded-full">
+              ✦ Mais escolhido
             </div>
 
             <div>
-              <div className="flex justify-between items-baseline mb-4 mt-2">
-                <h3 className="font-serif text-2xl font-semibold text-[#292A24]">
-                  Semestral
-                </h3>
-                <span className="text-xs font-semibold text-[#B79B68]">
-                  6 meses
+              <div className="flex justify-between items-baseline mb-4 mt-1">
+                <div>
+                  <span className="text-[11px] text-[#B79B68] uppercase tracking-wider font-semibold block">
+                    Semestral
+                  </span>
+                  <h3 className="font-serif text-2xl font-semibold text-[#292A24] mt-0.5">
+                    6 Meses
+                  </h3>
+                </div>
+                <span className="text-xs text-[#445343] font-medium">
+                  Maior constância
                 </span>
               </div>
 
@@ -119,24 +122,22 @@ export function Pricing() {
                   <span className="text-xs text-[#6F7067]">/mês</span>
                 </div>
                 <p className="text-xs text-[#445343] font-medium mt-2">
-                  R$ 149,90 à vista via PIX (pagamento único)
+                  R$ 149,90 em pagamento único para 6 meses
                 </p>
               </div>
 
               <ul className="space-y-3 text-xs text-[#6F7067] mb-8 font-light">
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#445343] font-bold">✓</span>
-                  <span>
-                    <strong className="text-[#292A24]">Menor valor diário:</strong> menos de R$ 0,83/dia
-                  </span>
+                  <span>Envio diário garantido por 180 dias</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#445343] font-bold">✓</span>
-                  <span>Envio diário às 06h por 180 dias</span>
+                  <span>Equivalente a menos de R$ 0,83 por dia</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#445343] font-bold">✓</span>
-                  <span>Sem cobranças surpresa no cartão</span>
+                  <span>Sem cobranças mensais repetidas</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#445343] font-bold">✓</span>
@@ -147,20 +148,25 @@ export function Pricing() {
 
             <button
               type="button"
-              onClick={() => handleSelectPlan("semiannual")}
-              className="w-full py-4 px-4 rounded-full bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
+              onClick={() => openCheckout("semiannual")}
+              className="w-full py-4 px-4 rounded-full bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-xs transition-all duration-200 cursor-pointer shadow-xs"
             >
-              Começar plano Semestral →
+              Quero receber meu Maná Diário →
             </button>
           </div>
 
-          {/* Plano Trimestral */}
+          {/* Trimestral: Para criar constância */}
           <div className="bg-[#FFFDF8] border border-[#E2DBD0] rounded-2xl p-7 flex flex-col justify-between transition-all duration-200 hover:border-[#B79B68]/60">
             <div>
               <div className="flex justify-between items-baseline mb-4">
-                <h3 className="font-serif text-2xl font-medium text-[#292A24]">
-                  Trimestral
-                </h3>
+                <div>
+                  <span className="text-[11px] text-[#6F7067] uppercase tracking-wider block">
+                    Para criar constância
+                  </span>
+                  <h3 className="font-serif text-2xl font-medium text-[#292A24] mt-0.5">
+                    Trimestral
+                  </h3>
+                </div>
                 <span className="text-xs text-[#8E8F86]">3 meses</span>
               </div>
 
@@ -173,25 +179,25 @@ export function Pricing() {
                   <span className="text-xs text-[#6F7067]">/mês</span>
                 </div>
                 <p className="text-xs text-[#8E8F86] mt-2">
-                  R$ 79,90 à vista via PIX (pagamento único)
+                  R$ 79,90 em pagamento único para 3 meses
                 </p>
               </div>
 
               <ul className="space-y-3 text-xs text-[#6F7067] mb-8 font-light">
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
+                  <span className="text-[#445343]">✓</span>
                   <span>Envio diário às 06h por 90 dias</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
-                  <span>Leitura, reflexão, oração e prática</span>
+                  <span className="text-[#445343]">✓</span>
+                  <span>Palavra, reflexão, oração e aplicação</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
+                  <span className="text-[#445343]">✓</span>
                   <span>Sem aplicativo adicional</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="text-[#445343] font-bold">✓</span>
+                  <span className="text-[#445343]">✓</span>
                   <span>Economia em relação ao mensal</span>
                 </li>
               </ul>
@@ -199,10 +205,10 @@ export function Pricing() {
 
             <button
               type="button"
-              onClick={() => handleSelectPlan("quarterly")}
-              className="w-full py-3.5 px-4 rounded-full border border-[#29352C] text-[#29352C] hover:bg-[#29352C] hover:text-[#FFFDF8] font-medium text-sm transition-colors duration-200 cursor-pointer"
+              onClick={() => openCheckout("quarterly")}
+              className="w-full py-3.5 px-4 rounded-full border border-[#29352C] text-[#29352C] hover:bg-[#29352C] hover:text-[#FFFDF8] font-medium text-xs transition-colors duration-200 cursor-pointer"
             >
-              Começar plano Trimestral
+              Começar com este plano
             </button>
           </div>
         </div>
