@@ -195,7 +195,7 @@ export function CheckoutModal() {
               Maná Diário
             </span>
             <span className="text-[10px] text-[#6F7067] bg-[#EFE9DC] px-2 py-0.5 rounded-full border border-[#E2DBD0] ml-1">
-              AXION Pay 🔒
+              AXION Pay
             </span>
           </div>
 
@@ -463,18 +463,25 @@ export function CheckoutModal() {
                             : "bg-[#FFFDF8] border-[#E2DBD0]"
                         }`}
                       >
-                        <strong className="text-xs font-semibold text-[#292A24] block">
-                          ⚡ PIX Imediato
+                        <strong className="text-xs font-semibold text-[#292A24] flex items-center gap-1.5">
+                          <svg className="w-3.5 h-3.5 text-[#32BCAD] shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M17.433 16.484l-4.52-4.52a1.288 1.288 0 0 1 0-1.821l4.52-4.52a3.52 3.52 0 0 1 4.978 4.978l-.872.873.872.872a3.52 3.52 0 0 1-4.978 4.978zM6.567 16.484a3.52 3.52 0 0 1-4.978-4.978l.872-.872-.872-.873a3.52 3.52 0 0 1 4.978-4.978l4.52 4.52a1.288 1.288 0 0 1 0 1.821l-4.52 4.52zM12 14.733l-2.733-2.733L12 9.267l2.733 2.733L12 14.733z" />
+                          </svg>
+                          <span>PIX Imediato</span>
                         </strong>
-                        <span className="text-[10px] text-[#6F7067] font-light">
+                        <span className="text-[10px] text-[#6F7067] font-light block mt-0.5">
                           Pagamento a cada mês
                         </span>
                       </button>
                     </>
                   ) : (
                     <div className="col-span-2 p-3 rounded-xl border border-[#B79B68] bg-[#F7F2E6] flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">⚡</span>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-[#32BCAD]/10 text-[#32BCAD] flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M17.433 16.484l-4.52-4.52a1.288 1.288 0 0 1 0-1.821l4.52-4.52a3.52 3.52 0 0 1 4.978 4.978l-.872.873.872.872a3.52 3.52 0 0 1-4.978 4.978zM6.567 16.484a3.52 3.52 0 0 1-4.978-4.978l.872-.872-.872-.873a3.52 3.52 0 0 1 4.978-4.978l4.52 4.52a1.288 1.288 0 0 1 0 1.821l-4.52 4.52zM12 14.733l-2.733-2.733L12 9.267l2.733 2.733L12 14.733z" />
+                          </svg>
+                        </div>
                         <div>
                           <strong className="text-xs font-semibold text-[#292A24] block">
                             PIX Instantâneo com Desconto Especial
@@ -499,50 +506,60 @@ export function CheckoutModal() {
                 </span>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#292A24] mb-1">
-                    Nome Completo
+                  <label
+                    htmlFor="client-name"
+                    className="block text-xs font-medium text-[#292A24] mb-1"
+                  >
+                    Nome completo
                   </label>
                   <input
+                    id="client-name"
                     type="text"
                     required
-                    autoComplete="name"
-                    placeholder="Como podemos te chamar?"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-sm text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    placeholder="Seu nome"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#292A24] mb-1">
-                    Seu E-mail
+                  <label
+                    htmlFor="client-email"
+                    className="block text-xs font-medium text-[#292A24] mb-1"
+                  >
+                    E-mail
                   </label>
                   <input
+                    id="client-email"
                     type="email"
                     required
-                    autoComplete="email"
-                    placeholder="voce@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-sm text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    placeholder="seu@email.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#292A24] mb-1">
+                  <label
+                    htmlFor="client-phone"
+                    className="block text-xs font-medium text-[#292A24] mb-1"
+                  >
                     WhatsApp com DDD
                   </label>
                   <input
+                    id="client-phone"
                     type="tel"
                     required
-                    inputMode="tel"
-                    placeholder="(00) 00000-0000"
                     value={phone}
                     onChange={handlePhoneChange}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-sm text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    placeholder="(11) 99999-9999"
+                    maxLength={15}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
                   />
-                  <span className="text-[10px] text-[#8E8F86] mt-1 block">
-                    Confira o número — é onde você receberá seu devocional às 06h.
+                  <span className="text-[10px] text-[#6F7067] font-light mt-1 block">
+                    É neste número que você receberá seu devocional todos os dias às 06h.
                   </span>
                 </div>
 
@@ -552,8 +569,10 @@ export function CheckoutModal() {
                     <span className="text-[11px] font-medium text-[#292A24] block">
                       Dados do Cartão (Processamento Seguro AXION Pay)
                     </span>
-                    <div className="flex items-center gap-2 text-xs text-[#8E8F86] py-1">
-                      <span>🔒</span>
+                    <div className="flex items-center gap-1.5 text-xs text-[#8E8F86] py-1">
+                      <svg className="w-3.5 h-3.5 text-[#445343] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
                       <span>Tokenização e criptografia de ponta a ponta.</span>
                     </div>
                   </div>
@@ -616,7 +635,9 @@ export function CheckoutModal() {
 
               {/* Security reassurance */}
               <p className="text-center text-[10px] text-[#8E8F86] flex items-center justify-center gap-1.5 pt-1">
-                <span>🔒</span>
+                <svg className="w-3.5 h-3.5 text-[#445343] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
                 <span>
                   AXION Pay · Pagamento seguro e criptografado · Cancele enviando SAIR
                 </span>
