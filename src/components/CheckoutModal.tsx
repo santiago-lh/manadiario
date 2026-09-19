@@ -20,6 +20,15 @@ export function CheckoutModal() {
   const [errorMessage, setErrorMessage] = useState("");
   const [copiedPix, setCopiedPix] = useState(false);
   const [pixCharge, setPixCharge] = useState<AxionChargeResponse | null>(null);
+  const [pixExpired, setPixExpired] = useState(false);
+  const [touched, setTouched] = useState({ name: false, email: false, phone: false });
+
+  // Validações em tempo real
+  const isNameValid = name.trim().length >= 3;
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+  const phoneDigits = phone.replace(/\D/g, "");
+  const isPhoneValid = phoneDigits.length >= 10 && phoneDigits.length <= 11;
+  const isFormValid = isNameValid && isEmailValid && isPhoneValid && optIn;
 
   // Set default payment method when plan changes
   useEffect(() => {
@@ -53,6 +62,12 @@ export function CheckoutModal() {
         if (data.status === "PAID") {
           clearInterval(interval);
           setStep("success");
+        } else if (data.status === "EXPIRED") {
+          clearInterval(interval);
+          setPixExpired(true);
+        } else if (data.status === "FAILED") {
+          clearInterval(interval);
+          setErrorMessage("A cobrança PIX não pôde ser concluída. Gere um novo código.");
         }
       } catch (err) {
         // Silent poll error
@@ -112,11 +127,13 @@ export function CheckoutModal() {
     setTimeout(() => setCopiedPix(false), 3000);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !email || !phone || !optIn) return;
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setTouched({ name: true, email: true, phone: true });
+    if (!isFormValid) return;
     setLoading(true);
     setErrorMessage("");
+    setPixExpired(false);
 
     try {
       if (paymentMethod === "pix") {
@@ -167,7 +184,9 @@ export function CheckoutModal() {
   const resetAndClose = () => {
     setStep("form");
     setPixCharge(null);
+    setPixExpired(false);
     setErrorMessage("");
+    setTouched({ name: false, email: false, phone: false });
     closeCheckout();
   };
 
@@ -229,70 +248,103 @@ export function CheckoutModal() {
                 </p>
               </div>
 
-              {/* QR Code Container */}
-              <div className="bg-[#FFF] border-2 border-[#E2DBD0] p-4 rounded-2xl inline-block shadow-sm">
-                {pixCharge.qrCodeUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={pixCharge.qrCodeUrl}
-                    alt="QR Code PIX AXION Pay"
-                    className="w-48 h-48 mx-auto rounded-lg"
-                  />
-                ) : (
-                  <div className="w-48 h-48 flex items-center justify-center bg-[#F7F4EC] text-xs text-[#6F7067]">
-                    QR Code Gerado
+              {pixExpired ? (
+                <div className="p-6 rounded-2xl bg-[#FFF6F4] border border-[#F2C5BD] text-center space-y-4 animate-fade-in max-w-md mx-auto my-4">
+                  <div className="w-12 h-12 rounded-full bg-[#E5533D]/10 text-[#E5533D] flex items-center justify-center mx-auto text-xl font-bold">
+                    ⏱
                   </div>
-                )}
-                <span className="text-[11px] text-[#445343] font-semibold block mt-2">
-                  Total: {currentPlan.total}
-                </span>
-              </div>
-
-              {/* Pix Copia e Cola Field */}
-              <div className="space-y-2 max-w-md mx-auto text-left">
-                <label className="block text-xs font-medium text-[#292A24]">
-                  Código PIX (Copia e Cola)
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    readOnly
-                    value={pixCharge.brCode}
-                    className="w-full px-3 py-2 text-xs font-mono bg-[#F7F4EC] border border-[#E2DBD0] rounded-xl text-[#292A24] focus:outline-none"
-                  />
+                  <div>
+                    <h4 className="font-serif text-lg font-medium text-[#292A24]">
+                      Código PIX expirado
+                    </h4>
+                    <p className="text-xs text-[#6F7067] mt-1 font-light leading-relaxed">
+                      O tempo limite para pagamento deste código encerrou por segurança. Clique abaixo para gerar um novo código imediatamente.
+                    </p>
+                  </div>
                   <button
                     type="button"
-                    onClick={handleCopyPix}
-                    className="px-4 py-2 bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-medium rounded-xl whitespace-nowrap transition-colors cursor-pointer"
+                    onClick={() => handleSubmit()}
+                    disabled={loading}
+                    className="w-full py-3.5 px-6 rounded-full bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-xs transition-colors shadow-md cursor-pointer disabled:opacity-50"
                   >
-                    {copiedPix ? "Copiado! ✓" : "Copiar"}
+                    {loading ? "Gerando novo PIX..." : "Gerar novo código PIX →"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStep("form")}
+                    className="text-xs text-[#6F7067] hover:text-[#292A24] underline block mx-auto pt-1"
+                  >
+                    Voltar ao formulário
                   </button>
                 </div>
-              </div>
+              ) : (
+                <>
+                  {/* QR Code Container */}
+                  <div className="bg-[#FFF] border-2 border-[#E2DBD0] p-4 rounded-2xl inline-block shadow-sm">
+                    {pixCharge.qrCodeUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={pixCharge.qrCodeUrl}
+                        alt="QR Code PIX AXION Pay"
+                        className="w-48 h-48 mx-auto rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-48 h-48 flex items-center justify-center bg-[#F7F4EC] text-xs text-[#6F7067]">
+                        QR Code Gerado
+                      </div>
+                    )}
+                    <span className="text-[11px] text-[#445343] font-semibold block mt-2">
+                      Total: {currentPlan.total}
+                    </span>
+                  </div>
 
-              {/* Status Polling Indicator */}
-              <div className="flex items-center justify-center gap-2 text-xs text-[#6F7067] pt-2">
-                <span className="w-2 h-2 rounded-full bg-[#B79B68] animate-ping" />
-                <span>Aguardando confirmação do pagamento em tempo real...</span>
-              </div>
+                  {/* Pix Copia e Cola Field */}
+                  <div className="space-y-2 max-w-md mx-auto text-left">
+                    <label className="block text-xs font-medium text-[#292A24]">
+                      Código PIX (Copia e Cola)
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={pixCharge.brCode}
+                        className="w-full px-3 py-2 text-xs font-mono bg-[#F7F4EC] border border-[#E2DBD0] rounded-xl text-[#292A24] focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleCopyPix}
+                        className="px-4 py-2 bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-medium rounded-xl whitespace-nowrap transition-colors cursor-pointer"
+                      >
+                        {copiedPix ? "Copiado! ✓" : "Copiar"}
+                      </button>
+                    </div>
+                  </div>
 
-              {/* Confirm / Simulate Button */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  type="button"
-                  onClick={() => setStep("success")}
-                  className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-xs px-6 py-3.5 rounded-full transition-colors shadow-md cursor-pointer"
-                >
-                  Já realizei o pagamento →
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStep("form")}
-                  className="py-3 px-5 rounded-full border border-[#E2DBD0] text-xs text-[#6F7067] hover:text-[#292A24] transition-colors"
-                >
-                  Voltar e alterar dados
-                </button>
-              </div>
+                  {/* Status Polling Indicator */}
+                  <div className="flex items-center justify-center gap-2 text-xs text-[#6F7067] pt-2">
+                    <span className="w-2 h-2 rounded-full bg-[#B79B68] animate-ping" />
+                    <span>Aguardando confirmação do pagamento em tempo real...</span>
+                  </div>
+
+                  {/* Confirm / Simulate Button */}
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setStep("success")}
+                      className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-xs px-6 py-3.5 rounded-full transition-colors shadow-md cursor-pointer"
+                    >
+                      Já realizei o pagamento →
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStep("form")}
+                      className="py-3 px-5 rounded-full border border-[#E2DBD0] text-xs text-[#6F7067] hover:text-[#292A24] transition-colors"
+                    >
+                      Voltar e alterar dados
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
@@ -550,9 +602,19 @@ export function CheckoutModal() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Seu nome"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    onBlur={() => setTouched((prev) => ({ ...prev, name: true }))}
+                    placeholder="Seu nome completo"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none transition-colors ${
+                      touched.name && !isNameValid
+                        ? "border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                        : "border-[#E2DBD0] focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    }`}
                   />
+                  {touched.name && !isNameValid && (
+                    <span className="text-[10px] text-red-600 block mt-1 font-light">
+                      Informe pelo menos 3 caracteres.
+                    </span>
+                  )}
                 </div>
 
                 <div>
@@ -568,9 +630,19 @@ export function CheckoutModal() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
                     placeholder="seu@email.com"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none transition-colors ${
+                      touched.email && !isEmailValid
+                        ? "border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                        : "border-[#E2DBD0] focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    }`}
                   />
+                  {touched.email && !isEmailValid && (
+                    <span className="text-[10px] text-red-600 block mt-1 font-light">
+                      Informe um endereço de e-mail válido (ex: seu@email.com).
+                    </span>
+                  )}
                 </div>
 
                 <div>
@@ -586,13 +658,24 @@ export function CheckoutModal() {
                     required
                     value={phone}
                     onChange={handlePhoneChange}
+                    onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
                     placeholder="(11) 99999-9999"
                     maxLength={15}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E2DBD0] bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    className={`w-full px-3.5 py-2.5 rounded-xl border bg-[#FFFDF8] text-xs text-[#292A24] focus:outline-none transition-colors ${
+                      touched.phone && !isPhoneValid
+                        ? "border-red-400 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                        : "border-[#E2DBD0] focus:border-[#B79B68] focus:ring-1 focus:ring-[#B79B68]"
+                    }`}
                   />
-                  <span className="text-[10px] text-[#6F7067] font-light mt-1 block">
-                    É neste número que você receberá seu devocional todos os dias às 06h.
-                  </span>
+                  {touched.phone && !isPhoneValid ? (
+                    <span className="text-[10px] text-red-600 block mt-1 font-light">
+                      Informe o DDD e o número completo (ex: 11 99999-9999).
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-[#6F7067] font-light mt-1 block">
+                      É neste número que você receberá seu devocional todos os dias às 06h.
+                    </span>
+                  )}
                 </div>
 
                 {/* Secure Card Notice if Cartao */}
@@ -641,10 +724,18 @@ export function CheckoutModal() {
                 </span>
               </label>
 
+              {/* Error alert banner */}
+              {errorMessage && (
+                <div className="p-3 rounded-xl bg-[#FFF6F4] border border-[#F2C5BD] text-xs text-[#C53929] flex items-center gap-2 animate-fade-in">
+                  <span className="shrink-0 text-sm">⚠️</span>
+                  <span className="font-medium leading-snug">{errorMessage}</span>
+                </div>
+              )}
+
               {/* Submit CTA */}
               <button
                 type="submit"
-                disabled={!optIn || !name || !email || !phone || loading}
+                disabled={!isFormValid || loading}
                 className="w-full py-4 rounded-full bg-[#29352C] hover:bg-[#445343] disabled:opacity-50 text-[#FFFDF8] font-medium text-sm transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
               >
                 {loading ? (

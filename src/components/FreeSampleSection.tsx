@@ -21,13 +21,17 @@ export function FreeSampleSection() {
     setPhone(value);
   };
 
+  const isNameValid = name.trim().length >= 3;
+  const phoneDigits = phone.replace(/\D/g, "");
+  const isPhoneValid = phoneDigits.length >= 10 && phoneDigits.length <= 11;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phone) return;
+    if (!isNameValid || !isPhoneValid) return;
 
     // [PONTO DE INTEGRAÇÃO BACKEND]:
     // Conectar aqui com o webhook/endpoint de captura de lead (ex.: /api/leads/free-sample)
-    // Exemplo: await fetch('/api/leads/free-sample', { method: 'POST', body: JSON.stringify({ name, phone }) });
+    // Exemplo: await fetch('/api/leads/free-sample', { method: 'POST', body: JSON.stringify({ name: name.trim(), phone: `+55${phoneDigits}` }) });
 
     setSubmitted(true);
   };
@@ -63,7 +67,7 @@ export function FreeSampleSection() {
             <div className="p-6 rounded-2xl bg-[#FFFDF8] border border-[#E2DBD0] text-center space-y-2 animate-fade-in">
               <span className="text-xl text-[#445343]">✓</span>
               <h3 className="font-serif text-lg text-[#292A24] font-medium">
-                Tudo pronto, {name}!
+                Tudo pronto, {name.trim()}!
               </h3>
               <p className="text-xs text-[#6F7067] font-light">
                 Amanhã pontualmente às 06:00 você receberá o Maná demonstrativo
@@ -90,11 +94,13 @@ export function FreeSampleSection() {
                 placeholder="(00) 00000-0000"
                 value={phone}
                 onChange={handlePhoneChange}
+                maxLength={15}
                 className="flex-1 px-4 py-3 rounded-full border border-[#E2DBD0] bg-[#FFFDF8] text-xs sm:text-sm text-[#292A24] focus:outline-none focus:border-[#B79B68]"
               />
               <button
                 type="submit"
-                className="px-6 py-3 rounded-full bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-medium whitespace-nowrap transition-colors cursor-pointer"
+                disabled={!isNameValid || !isPhoneValid}
+                className="px-6 py-3 rounded-full bg-[#29352C] hover:bg-[#445343] disabled:opacity-50 text-[#FFFDF8] text-xs font-medium whitespace-nowrap transition-colors cursor-pointer disabled:cursor-not-allowed"
               >
                 Quero receber
               </button>
