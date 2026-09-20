@@ -21,6 +21,8 @@ export function CheckoutModal() {
   const [copiedPix, setCopiedPix] = useState(false);
   const [pixCharge, setPixCharge] = useState<AxionChargeResponse | null>(null);
   const [pixExpired, setPixExpired] = useState(false);
+  const [isCheckingPixStatus, setIsCheckingPixStatus] = useState(false);
+  const [pendingStatusNotice, setPendingStatusNotice] = useState<string | null>(null);
   const [touched, setTouched] = useState({ name: false, email: false, phone: false });
 
   // Validações em tempo real
@@ -61,12 +63,15 @@ export function CheckoutModal() {
         const data = await res.json();
         if (data.status === "PAID") {
           clearInterval(interval);
+          setPendingStatusNotice(null);
           setStep("success");
         } else if (data.status === "EXPIRED") {
           clearInterval(interval);
+          setPendingStatusNotice(null);
           setPixExpired(true);
         } else if (data.status === "FAILED") {
           clearInterval(interval);
+          setPendingStatusNotice(null);
           setErrorMessage("A cobrança PIX não pôde ser concluída. Gere um novo código.");
         }
       } catch (err) {
@@ -127,6 +132,38 @@ export function CheckoutModal() {
     setTimeout(() => setCopiedPix(false), 3000);
   };
 
+  const handleManualCheckPixStatus = async () => {
+    if (!pixCharge?.correlationId || isCheckingPixStatus) return;
+    setIsCheckingPixStatus(true);
+    setPendingStatusNotice(null);
+
+    try {
+      const res = await fetch(`/api/checkout/status/${pixCharge.correlationId}`);
+      const data = await res.json();
+
+      if (data.status === "PAID") {
+        setPendingStatusNotice(null);
+        setStep("success");
+      } else if (data.status === "EXPIRED") {
+        setPendingStatusNotice(null);
+        setPixExpired(true);
+      } else if (data.status === "FAILED") {
+        setPendingStatusNotice(null);
+        setErrorMessage("A cobrança PIX não pôde ser concluída. Gere um novo código.");
+      } else {
+        setPendingStatusNotice(
+          "Pagamento ainda não confirmado pelo banco. A compensação costuma levar alguns instantes. Se você já realizou o Pix, aguarde nesta tela que ela atualizará automaticamente assim que o banco confirmar."
+        );
+      }
+    } catch {
+      setPendingStatusNotice(
+        "Não foi possível consultar o banco no momento. O sistema continuará verificando automaticamente a cada poucos segundos."
+      );
+    } finally {
+      setIsCheckingPixStatus(false);
+    }
+  };
+
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setTouched({ name: true, email: true, phone: true });
@@ -134,6 +171,7 @@ export function CheckoutModal() {
     setLoading(true);
     setErrorMessage("");
     setPixExpired(false);
+    setPendingStatusNotice(null);
 
     try {
       if (paymentMethod === "pix") {
@@ -186,6 +224,7 @@ export function CheckoutModal() {
     setPixCharge(null);
     setPixExpired(false);
     setErrorMessage("");
+    setPendingStatusNotice(null);
     setTouched({ name: false, email: false, phone: false });
     closeCheckout();
   };
@@ -326,19 +365,47 @@ export function CheckoutModal() {
                     <span>Aguardando confirmação do pagamento em tempo real...</span>
                   </div>
 
-                  {/* Confirm / Simulate Button */}
+                  {/* Notice if user clicked before payment is confirmed */}
+                  {pendingStatusNotice && (
+                    <div className="p-3.5 bg-[#FAF8F3] border border-[#E2DBD0] rounded-xl text-left text-xs text-[#52534C] space-y-1 animate-fade-in max-w-md mx-auto">
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-[#B79B68] text-base leading-none mt-0.5">⏳</span>
+                        <div className="flex-1 space-y-0.5">
+                          <p className="font-medium text-[#292A24]">
+                            Aguardando confirmação do banco
+                          </p>
+                          <p className="text-[11px] leading-relaxed text-[#6F7067]">
+                            {pendingStatusNotice}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Manual Check / Return Buttons */}
                   <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                       type="button"
-                      onClick={() => setStep("success")}
-                      className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-xs px-6 py-3.5 rounded-full transition-colors shadow-md cursor-pointer"
+                      onClick={handleManualCheckPixStatus}
+                      disabled={isCheckingPixStatus}
+                      className="bg-[#29352C] hover:bg-[#445343] disabled:opacity-60 text-[#FFFDF8] font-medium text-xs px-6 py-3.5 rounded-full transition-colors shadow-md cursor-pointer flex items-center justify-center gap-2"
                     >
-                      Já realizei o pagamento →
+                      {isCheckingPixStatus ? (
+                        <>
+                          <span className="w-3.5 h-3.5 border-2 border-[#FFFDF8]/30 border-t-[#FFFDF8] rounded-full animate-spin" />
+                          <span>Verificando com o banco...</span>
+                        </>
+                      ) : (
+                        <span>Já realizei o pagamento →</span>
+                      )}
                     </button>
                     <button
                       type="button"
-                      onClick={() => setStep("form")}
-                      className="py-3 px-5 rounded-full border border-[#E2DBD0] text-xs text-[#6F7067] hover:text-[#292A24] transition-colors"
+                      onClick={() => {
+                        setPendingStatusNotice(null);
+                        setStep("form");
+                      }}
+                      className="py-3 px-5 rounded-full border border-[#E2DBD0] text-xs text-[#6F7067] hover:text-[#292A24] transition-colors cursor-pointer"
                     >
                       Voltar e alterar dados
                     </button>
