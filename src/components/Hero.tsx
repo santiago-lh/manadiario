@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useCheckout } from "./CheckoutContext";
 
 export function Hero() {
@@ -15,7 +16,7 @@ export function Hero() {
       <div className="mana-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           {/* Left Column: Contemplative & Direct Copy */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left z-10">
+          <div className="lg:col-span-6 flex flex-col items-start text-left z-10">
             {/* Small Subtle Eyebrow */}
             <div className="inline-flex items-center gap-2 text-[#445343] text-xs font-semibold tracking-wider uppercase mb-5">
               <span className="text-[#B79B68]">✦</span>
@@ -73,182 +74,74 @@ export function Hero() {
             </p>
           </div>
 
-          {/* Right Column: Realistic Calm Morning Scene */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
-            <div className="relative w-full max-w-[420px]">
-              {/* Arched Morning Frame with warm morning light */}
-              <div className="relative rounded-[26px] overflow-hidden bg-gradient-to-b from-[#F3ECE2] to-[#E5DACB] border border-[#DDD3C4] p-5 shadow-lg shadow-[#29352C]/5">
-                <div className="relative aspect-[4/5] w-full rounded-[20px] overflow-hidden bg-[#FAF6EE] flex items-center justify-center">
-                  <svg
-                    viewBox="0 0 400 500"
-                    fill="none"
-                    className="w-full h-full object-cover"
+          {/* Right Column: Premium High-Converting Product Hero Visual */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center w-full">
+            {/* Ambient Morning Light Flare Glow */}
+            <div
+              className="absolute -inset-4 sm:-inset-10 bg-gradient-to-tr from-[#E6D4BE]/50 via-[#F7ECE1]/60 to-[#FFFDF8]/0 rounded-[48px] blur-3xl -z-10 pointer-events-none"
+              aria-hidden="true"
+            />
+
+            <div className="relative w-full max-w-[530px]">
+              {/* Luxury Device & Ritual Showcase Frame */}
+              <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-b from-[#FFFDF8] via-[#FAF6EE] to-[#EFE8DC] border border-[#E2DBD0] p-2.5 sm:p-3 shadow-2xl shadow-[#29352C]/10 transition-all duration-300 hover:shadow-3xl hover:border-[#D6CAB8]">
+                {/* 4:3 Aspect container with high-res photograph */}
+                <div className="relative aspect-[4/3] w-full rounded-[20px] overflow-hidden bg-[#FAF6EE]">
+                  <Image
+                    src="/images/hero-mana-diario.jpg"
+                    alt="Smartphone moderno exibindo o aplicativo Maná Diário em um devocional matinal com Bíblia aberta e café ao amanhecer"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 530px"
+                    className="object-cover object-center"
+                  />
+
+                  {/* Gentle warm ambient lighting gradient overlay */}
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t from-[#29352C]/20 via-transparent to-transparent pointer-events-none"
                     aria-hidden="true"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="morningGlow"
-                        x1="200"
-                        y1="0"
-                        x2="200"
-                        y2="500"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stopColor="#F9EFE2" />
-                        <stop offset="0.6" stopColor="#EAD8C2" />
-                        <stop offset="1" stopColor="#D5C4AC" />
-                      </linearGradient>
-                      <linearGradient
-                        id="sunBeams"
-                        x1="60"
-                        y1="0"
-                        x2="340"
-                        y2="500"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stopColor="#FFFDF8" stopOpacity="0.4" />
-                        <stop offset="1" stopColor="#FFFDF8" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Window background */}
-                    <rect width="400" height="500" fill="url(#morningGlow)" />
-
-                    {/* Morning Sun */}
-                    <circle cx="205" cy="180" r="70" fill="#FFFDF8" opacity="0.95" />
-                    <circle
-                      cx="205"
-                      cy="180"
-                      r="90"
-                      stroke="#FFF7E2"
-                      strokeWidth="1.5"
-                      strokeOpacity="0.5"
-                    />
-
-                    {/* Distant Hills / Horizon */}
-                    <path
-                      d="M-20 370 C90 320, 180 340, 260 300 C320 270, 380 310, 440 290 L440 500 L-20 500 Z"
-                      fill="#C8C0AC"
-                      opacity="0.65"
-                    />
-                    <path
-                      d="M-20 400 C110 350, 220 380, 420 330 L420 500 L-20 500 Z"
-                      fill="#A8AD99"
-                      opacity="0.75"
-                    />
-
-                    {/* Window Frame Lines */}
-                    <line
-                      x1="200"
-                      y1="0"
-                      x2="200"
-                      y2="500"
-                      stroke="#FFFDF8"
-                      strokeWidth="4"
-                      strokeOpacity="0.8"
-                    />
-                    <line
-                      x1="0"
-                      y1="235"
-                      x2="400"
-                      y2="235"
-                      stroke="#FFFDF8"
-                      strokeWidth="4"
-                      strokeOpacity="0.8"
-                    />
-
-                    {/* Window Sill */}
-                    <rect x="0" y="440" width="400" height="60" fill="#C9BDAA" />
-
-                    {/* Sunlight Beam */}
-                    <polygon
-                      points="120,0 280,0 420,500 20,500"
-                      fill="url(#sunBeams)"
-                    />
-
-                    {/* Open Bible & Morning Coffee on Sill */}
-                    <g transform="translate(180, 375)">
-                      {/* Open Bible Pages */}
-                      <path
-                        d="M-90 40 L-20 30 L-20 65 L-90 75 Z"
-                        fill="#FAF6ED"
-                        stroke="#B8A892"
-                        strokeWidth="1"
-                      />
-                      <path
-                        d="M-20 30 L50 40 L50 75 L-20 65 Z"
-                        fill="#F3ECE0"
-                        stroke="#B8A892"
-                        strokeWidth="1"
-                      />
-                      <line
-                        x1="-20"
-                        y1="30"
-                        x2="-20"
-                        y2="65"
-                        stroke="#9C8B74"
-                        strokeWidth="1.5"
-                      />
-                      {/* Ribbon bookmark */}
-                      <path
-                        d="M-20 38 Q-10 65 -15 80"
-                        stroke="#B79B68"
-                        strokeWidth="2"
-                        fill="none"
-                      />
-
-                      {/* Coffee Cup */}
-                      <ellipse
-                        cx="100"
-                        cy="60"
-                        rx="26"
-                        ry="8"
-                        fill="#29352C"
-                        opacity="0.1"
-                      />
-                      <path
-                        d="M84 37 C84 58, 116 58, 116 37 Z"
-                        fill="#F7F4EC"
-                        stroke="#B8A892"
-                        strokeWidth="1.5"
-                      />
-                      <ellipse cx="100" cy="37" rx="16" ry="5" fill="#8C6544" />
-                      {/* Steam */}
-                      <path
-                        d="M96 27 Q92 18 97 10"
-                        stroke="#FFFDF8"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        fill="none"
-                        opacity="0.75"
-                      />
-                      <path
-                        d="M104 25 Q108 16 103 8"
-                        stroke="#FFFDF8"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        fill="none"
-                        opacity="0.75"
-                      />
-                    </g>
-                  </svg>
-
-                  {/* Gentle Floating Notification Badge */}
-                  <div className="absolute top-4 right-4 bg-[#FFFDF8]/95 backdrop-blur-xs border border-[#E2DBD0] rounded-full px-3.5 py-1 text-[11px] text-[#445343] font-medium flex items-center gap-2 shadow-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#445343]" />
-                    <span>06:00 da manhã</span>
-                  </div>
+                  />
                 </div>
 
-                {/* Subtle card message */}
-                <div className="mt-3.5 bg-[#FFFDF8] border border-[#E2DBD0] rounded-xl p-3.5 shadow-xs">
-                  <p className="text-[12px] font-serif italic text-[#292A24] leading-snug">
+                {/* Floating Badge: Daily Streak & Timing */}
+                <div className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-[#FFFDF8]/95 backdrop-blur-md border border-[#E2DBD0] rounded-full py-1.5 px-3.5 sm:px-4 text-[11px] sm:text-xs text-[#292A24] font-medium flex items-center gap-2 shadow-lg shadow-[#29352C]/10">
+                  <span className="w-2 h-2 rounded-full bg-[#445343] animate-pulse" />
+                  <span className="text-[#445343] font-semibold">06h00</span>
+                  <span className="text-[#B79B68]">•</span>
+                  <span>112 dias seguidos</span>
+                  <span className="text-xs">🕊️</span>
+                </div>
+
+                {/* Floating Card: Habit & Reflection preview */}
+                <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 bg-[#FFFDF8]/95 backdrop-blur-md border border-[#E2DBD0] rounded-2xl p-3 sm:p-3.5 shadow-xl shadow-[#29352C]/12 max-w-[270px] sm:max-w-[290px] flex flex-col gap-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-wider text-[#B79B68] font-bold">
+                      Ritual Matinal
+                    </span>
+                    <span className="text-[10px] text-[#445343] font-medium bg-[#E8F0E8] px-2 py-0.5 rounded-full">
+                      3 min de leitura
+                    </span>
+                  </div>
+                  <p className="text-[12px] font-serif italic text-[#292A24] leading-snug line-clamp-1">
                     “O Senhor é o meu pastor; de nada terei falta.”
                   </p>
-                  <span className="text-[10px] text-[#6F7067] font-light mt-1 block">
+                  <span className="text-[10px] text-[#6F7067] font-light">
                     Salmos 23:1 · Sua pausa da manhã no WhatsApp
                   </span>
                 </div>
+              </div>
+
+              {/* Minimalist Micro-benefits beneath the showcase */}
+              <div className="mt-4 flex items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-[#6F7067] font-light">
+                <span className="flex items-center gap-1.5">
+                  <span className="text-[#B79B68]">✦</span>
+                  Leitura diária guiada
+                </span>
+                <span className="text-[#D0C6B8]">•</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="text-[#445343]">✓</span>
+                  Sem distrações ou anúncios
+                </span>
               </div>
             </div>
           </div>
