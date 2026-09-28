@@ -20,16 +20,16 @@ export function StickyMobileCTA() {
   if (!visible || isCheckoutOpen) return null;
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 p-3 bg-[#FFFDF8]/95 backdrop-blur-md border-t border-[#E2DBD0] shadow-xl animate-fade-in">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))] bg-[#FFFDF8]/95 backdrop-blur-md border-t border-[#E2DBD0] shadow-xl animate-fade-in">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex flex-col">
+        <div className="flex flex-col min-w-0">
           <div className="flex items-center gap-1">
             <span className="text-[#B79B68] text-xs">✦</span>
-            <span className="font-serif font-semibold text-sm text-[#292A24]">
+            <span className="font-serif font-semibold text-sm text-[#292A24] truncate">
               Maná Diário
             </span>
           </div>
-          <span className="text-[11px] text-[#6F7067]">
+          <span className="text-[11px] text-[#6F7067] truncate">
             Às 06h no seu WhatsApp
           </span>
         </div>
@@ -37,9 +37,10 @@ export function StickyMobileCTA() {
         <button
           type="button"
           onClick={() => openCheckout("semiannual")}
-          className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-semibold px-4 py-2.5 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap"
+          className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs font-semibold px-4 py-2.5 rounded-full transition-all duration-200 shadow-md cursor-pointer whitespace-nowrap shrink-0"
         >
-          Quero receber meu Maná Diário
+          <span className="hidden min-[400px]:inline">Quero receber meu Maná</span>
+          <span className="min-[400px]:hidden">Começar agora →</span>
         </button>
       </div>
     </div>

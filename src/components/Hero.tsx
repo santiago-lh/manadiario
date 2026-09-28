@@ -9,16 +9,16 @@ export function Hero() {
 
   return (
     <section
-      className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-[#F7F4EC] via-[#F7F4EC] to-[#EFE9DC]/40"
+      className="relative pt-28 pb-16 sm:pt-32 sm:pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-[#F7F4EC] via-[#F7F4EC] to-[#EFE9DC]/40"
       id="inicio"
       aria-labelledby="hero-title"
     >
       <div className="mana-container">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Contemplative & Direct Copy */}
           <div className="lg:col-span-6 flex flex-col items-start text-left z-10">
             {/* Small Subtle Eyebrow */}
-            <div className="inline-flex items-center gap-2 text-[#445343] text-xs font-semibold tracking-wider uppercase mb-5">
+            <div className="inline-flex items-center gap-2 text-[#445343] text-xs font-semibold tracking-wider uppercase mb-4 sm:mb-5">
               <span className="text-[#B79B68]">✦</span>
               <span>Ritual Diário de Fé</span>
             </div>
@@ -26,7 +26,7 @@ export function Hero() {
             {/* Headline */}
             <h1
               id="hero-title"
-              className="font-serif text-[44px] leading-[1.06] sm:text-[58px] md:text-[68px] tracking-tight text-[#292A24] font-normal mb-6"
+              className="font-serif text-[38px] leading-[1.08] sm:text-[50px] md:text-[62px] lg:text-[68px] tracking-tight text-[#292A24] font-normal mb-5 sm:mb-6"
             >
               Antes de o dia
               <br className="hidden sm:inline" /> ganhar pressa,
@@ -37,17 +37,17 @@ export function Hero() {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-[#6F7067] leading-relaxed max-w-xl mb-8 font-light">
+            <p className="text-base sm:text-lg text-[#6F7067] leading-relaxed max-w-xl mb-7 sm:mb-8 font-light">
               Receba todas as manhãs uma breve leitura bíblica, reflexão e oração
               diretamente no seu WhatsApp.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 w-full sm:w-auto mb-5">
               <button
                 type="button"
                 onClick={() => openCheckout("semiannual")}
-                className="inline-flex items-center justify-center gap-3 bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer"
+                className="inline-flex items-center justify-center gap-3 bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] font-medium text-[15px] px-6 sm:px-8 py-3.5 sm:py-4 rounded-full transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer"
               >
                 <span>Quero receber meu Maná Diário</span>
                 <span className="text-base font-light text-[#B79B68]">→</span>
@@ -104,16 +104,16 @@ export function Hero() {
                 </div>
 
                 {/* Floating Badge: Daily Streak & Timing */}
-                <div className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-[#FFFDF8]/95 backdrop-blur-md border border-[#E2DBD0] rounded-full py-1.5 px-3.5 sm:px-4 text-[11px] sm:text-xs text-[#292A24] font-medium flex items-center gap-2 shadow-lg shadow-[#29352C]/10">
-                  <span className="w-2 h-2 rounded-full bg-[#445343] animate-pulse" />
+                <div className="absolute top-3 right-3 sm:top-5 sm:right-5 bg-[#FFFDF8]/95 backdrop-blur-md border border-[#E2DBD0] rounded-full py-1 px-3 sm:py-1.5 sm:px-4 text-[10px] sm:text-xs text-[#292A24] font-medium flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-[#29352C]/10">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#445343] animate-pulse" />
                   <span className="text-[#445343] font-semibold">06h00</span>
                   <span className="text-[#B79B68]">•</span>
                   <span>112 dias seguidos</span>
                   <span className="text-xs">🕊️</span>
                 </div>
 
-                {/* Floating Card: Habit & Reflection preview */}
-                <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 bg-[#FFFDF8]/95 backdrop-blur-md border border-[#E2DBD0] rounded-2xl p-3 sm:p-3.5 shadow-xl shadow-[#29352C]/12 max-w-[270px] sm:max-w-[290px] flex flex-col gap-1 text-left">
+                {/* Floating Card: Habit & Reflection preview (Desktop/Tablet - avoids obscuring phone on mobile) */}
+                <div className="absolute bottom-5 left-5 bg-[#FFFDF8]/95 backdrop-blur-md border border-[#E2DBD0] rounded-2xl p-3.5 shadow-xl shadow-[#29352C]/12 max-w-[280px] hidden sm:flex flex-col gap-1 text-left">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase tracking-wider text-[#B79B68] font-bold">
                       Ritual Matinal
@@ -131,8 +131,26 @@ export function Hero() {
                 </div>
               </div>
 
+              {/* Mobile Companion Card: Positioned neatly beneath the photo to keep phone 100% visible */}
+              <div className="sm:hidden mt-3 bg-[#FFFDF8]/95 border border-[#E2DBD0] rounded-2xl p-3.5 shadow-sm flex flex-col gap-1 text-left">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] uppercase tracking-wider text-[#B79B68] font-bold">
+                    Ritual Matinal
+                  </span>
+                  <span className="text-[10px] text-[#445343] font-medium bg-[#E8F0E8] px-2 py-0.5 rounded-full">
+                    3 min de leitura
+                  </span>
+                </div>
+                <p className="text-[12px] font-serif italic text-[#292A24] leading-snug">
+                  “O Senhor é o meu pastor; de nada terei falta.”
+                </p>
+                <span className="text-[10px] text-[#6F7067] font-light">
+                  Salmos 23:1 · Sua pausa da manhã no WhatsApp
+                </span>
+              </div>
+
               {/* Minimalist Micro-benefits beneath the showcase */}
-              <div className="mt-4 flex items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-[#6F7067] font-light">
+              <div className="mt-3.5 sm:mt-4 flex items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-[#6F7067] font-light">
                 <span className="flex items-center gap-1.5">
                   <span className="text-[#B79B68]">✦</span>
                   Leitura diária guiada

@@ -268,7 +268,7 @@ export function CheckoutModal() {
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 sm:p-8 max-h-[85vh] overflow-y-auto">
+        <div className="p-4 sm:p-8 max-h-[88vh] overflow-y-auto">
           {/* STEP 1: PIX PAYMENT (QR CODE & COPIA E COLA) */}
           {step === "pix_payment" && pixCharge && (
             <div className="text-center py-4 space-y-6 animate-fade-in">
@@ -511,7 +511,7 @@ export function CheckoutModal() {
               )}
 
               {/* Plan Switcher Pills */}
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
                 {(["monthly", "quarterly", "semiannual"] as PlanType[]).map(
                   (planKey) => {
                     const isSelected = selectedPlan === planKey;
@@ -521,7 +521,7 @@ export function CheckoutModal() {
                         key={planKey}
                         type="button"
                         onClick={() => openCheckout(planKey)}
-                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                           isSelected
                             ? "bg-[#F7F2E6] border-[#B79B68] ring-1 ring-[#B79B68] shadow-xs"
                             : "bg-[#FFFDF8] border-[#E2DBD0] hover:border-[#B79B68]/60"
@@ -529,17 +529,17 @@ export function CheckoutModal() {
                       >
                         <div>
                           <span
-                            className={`block text-[11px] font-semibold ${
+                            className={`block text-[10px] sm:text-[11px] font-semibold ${
                               isSelected ? "text-[#B79B68]" : "text-[#8E8F86]"
                             }`}
                           >
                             {p.name}
                           </span>
-                          <strong className="font-serif text-base text-[#292A24] block mt-0.5">
+                          <strong className="font-serif text-sm sm:text-base text-[#292A24] block mt-0.5">
                             {p.price}
                           </strong>
                         </div>
-                        <span className="text-[9px] text-[#6F7067] block mt-2 font-light">
+                        <span className="text-[8px] sm:text-[9px] text-[#6F7067] block mt-1.5 font-light leading-tight">
                           {p.badge}
                         </span>
                       </button>

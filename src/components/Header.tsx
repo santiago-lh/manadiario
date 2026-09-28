@@ -86,9 +86,10 @@ export function Header() {
           <button
             type="button"
             onClick={() => openCheckout("semiannual")}
-            className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-[13px] font-medium px-5 py-2.5 rounded-full transition-all duration-200 hover:shadow-sm cursor-pointer"
+            className="bg-[#29352C] hover:bg-[#445343] text-[#FFFDF8] text-xs sm:text-[13px] font-medium px-4 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-200 hover:shadow-sm cursor-pointer whitespace-nowrap"
           >
-            Quero receber meu Maná Diário
+            <span className="hidden sm:inline">Quero receber meu Maná Diário</span>
+            <span className="sm:hidden">Assinar</span>
           </button>
         </div>
       </div>
