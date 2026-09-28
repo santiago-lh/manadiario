@@ -16,7 +16,6 @@ import { PrivacySection } from "@/components/PrivacySection";
 import { FAQ } from "@/components/FAQ";
 import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
-import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { CheckoutModal } from "@/components/CheckoutModal";
 
 export default function HomePage() {
@@ -70,9 +69,6 @@ export default function HomePage() {
 
         {/* 16. Rodapé Institucional */}
         <Footer />
-
-        {/* Barra fixa mobile com CTA padronizado */}
-        <StickyMobileCTA />
 
         {/* Modal de Pagamento Seguro AXION Pay (PIX e Cartão) */}
         <CheckoutModal />
